@@ -1,0 +1,111 @@
+﻿@page
+@model AlarmViewer.Pages.AlarmsModel
+@{
+    ViewData["Title"] = "Alarms";
+}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        margin-top: 40px;
+        text-align: center;
+    }
+
+    h1 {
+        color: #333;
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .subtitle {
+        font-size: 18px;
+    }
+
+    .table {
+        background-color: #fff;
+    }
+
+        .table th,
+        .table td {
+            border-color: #ccc;
+        }
+
+        .table thead th {
+            background-color: #f2f2f2;
+        }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f8f9fa;
+    }
+
+     .table-bordered {
+        border: 5px solid thick;
+    }
+
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+
+    .btn-acknowledge {
+        color: #fff;
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-acknowledge:hover,
+        .btn-acknowledge:focus {
+            background-color: #c82333;
+            border-color: #c82333;
+        }
+</style>
+
+<div class="container">
+    <h1>Alarms</h1>
+
+    <div class="subtitle">
+        Recent alarms for the SCADA System:
+    </div>
+
+    <div class="table-responsive mt-4">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>AlarmId</th>
+                    <th>TagName</th>
+                    <th>AlarmType</th>
+                    <th>Activation Time</th>
+                    <th>Acknowledge Time</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var alarm in Model.alarms)
+                {
+                    <tr>
+                        <td>@alarm.AlarmId</td>
+                        <td>@alarm.TagName</td>
+                        <td>@alarm.AlarmType</td>
+                        <td>@alarm.ActivationTime</td>
+                        <td>
+                            @if (@alarm.AcknowledgeTime.HasValue)
+                            {
+                                @alarm.AcknowledgeTime
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="Acknowledge">
+                                    <input type="hidden" name="alarmId" value="@alarm.AlarmId" />
+                                    <button type="submit" class="btn btn-acknowledge">Acknowledge</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
